@@ -1,13 +1,17 @@
 SHELL := /bin/bash
+GIT_SHA=`git rev-parse --short HEAD || echo`
 
 .DEFAULT_GOAL := all
 .PHONY: all
 all: ## build pipeline
-all: mod inst gen build spell lint test
+all: mod inst gen build  #spell
 
 .PHONY: ci
 ci: ## CI build pipeline
-ci: all diff
+ci: all lint test diff
+
+.PHONY: release
+br: all release
 
 .PHONY: help
 help:
@@ -29,22 +33,28 @@ mod: ## go mod tidy
 .PHONY: inst
 inst: ## go install tools
 	$(call print-target)
-	
+
 .PHONY: gen
 gen: ## go generate
 	$(call print-target)
 	go generate ./...
 
 .PHONY: build
-build: ## goreleaser build
 build:
+	$(call print-target)
+	mkdir -p build
+	go build -ldflags "-X cmd.GitSHA=${GIT_SHA}" -o build/vmmanager .
+
+.PHONY: release
+## goreleaser build
+release:
 	$(call print-target)
 	goreleaser build --rm-dist --single-target --snapshot
 
-.PHONY: spell
-spell: ## misspell
-	$(call print-target)
-	misspell -error -locale=US -w **.md
+# .PHONY: spell
+# spell: ## misspell
+# 	$(call print-target)
+# 	misspell -error -locale=US -w **.md
 
 .PHONY: lint
 lint: ## golangci-lint

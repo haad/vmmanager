@@ -9,14 +9,25 @@ import (
 )
 
 func init() {
+	var gui bool
+	var vmx string
 	var startCmd = &cobra.Command{
-		Use:   "exec",
-		Short: "Execute a shell command",
-		Long:  "This command executes a shell command and prints the output to the console.",
+		Use:   "start",
+		Short: "Start virtual machine ",
+		Long:  "This command starts vmware fusion virtual machine.",
 		Run: func(cmd *cobra.Command, args []string) {
-			// Execute the "ls" command in the current directory
-			output, err := exec.Command("ls").Output()
+			var vmgui string
+
+			if gui {
+				vmgui = "gui"
+			} else {
+				vmgui = "nogui"
+			}
+
+			// Execute the "vmrun" command in the current directory
+			output, err := exec.Command("vmrun", "start", vmx, vmgui).Output()
 			if err != nil {
+				fmt.Println("Error Message:", string(output))
 				fmt.Println("Error executing command:", err)
 				os.Exit(1)
 			}
@@ -25,6 +36,10 @@ func init() {
 			fmt.Println(string(output))
 		},
 	}
+
+	startCmd.PersistentFlags().BoolVar(&gui, "gui", false, "Enables gui window for vm start")
+	startCmd.Flags().StringVarP(&vmx, "vmx", "V", "", "VM vmx file")
+	startCmd.MarkFlagRequired("vmx")
 
 	rootCmd.AddCommand(startCmd)
 

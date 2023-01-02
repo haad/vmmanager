@@ -14,8 +14,8 @@ func init() {
 	var url string
 	var fetchCmd = &cobra.Command{
 		Use:   "fetch",
-		Short: "Fetch a file from a web server",
-		Long:  "This command fetches a file from a web server and saves it to the local file system.",
+		Short: "Fetch a qcow2 disk image from a web server",
+		Long:  "Fetch a qcow2 disk image from a web server",
 		Run: func(cmd *cobra.Command, args []string) {
 			// Fetch the file from the web server
 			resp, err := http.Get(url)
@@ -46,7 +46,7 @@ func init() {
 		},
 	}
 
-	fetchCmd.Flags().StringVarP(&url, "url", "U", "URL to fetch qcow2 image from.")
+	fetchCmd.Flags().StringVarP(&url, "url", "U", "", "URL to fetch qcow2 image from.")
 	fetchCmd.MarkFlagRequired("url")
 
 	rootCmd.AddCommand(fetchCmd)

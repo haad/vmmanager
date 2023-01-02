@@ -25,6 +25,6 @@ func Execute() {
 func init() {
 	var debug bool
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Enables debug logging")
-	rootCmd.PersistentFlags().Int("port", 8080, "The port to listen on")
-	rootCmd.PersistentFlags().String("username", "", "The username to use")
+	// rootCmd.PersistentFlags().Int("port", 8080, "The port to listen on")
+	// rootCmd.PersistentFlags().String("username", "", "The username to use")
 }
