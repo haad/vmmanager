@@ -10,10 +10,10 @@ import (
 func init() {
 	var hardR bool
 	var softR bool
-	var stopCmd = &cobra.Command{
-		Use:   "stop [--hard] [path_to_file.vmx]",
-		Short: "Stop virtual machine ",
-		Long:  "This command stops vmware fusion virtual machine.",
+	var resetCmd = &cobra.Command{
+		Use:   "reset [--hard] [path_to_file.vmx]",
+		Short: "Reset virtual machine ",
+		Long:  "This command resets vmware fusion virtual machine.",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
 				return err
@@ -33,13 +33,11 @@ func init() {
 		Run: func(cmd *cobra.Command, args []string) {
 			var vmFlags = vmrunFlags{Hard: hardR, Soft: softR, Gui: false}
 
-			vmrunExecCommand("stop", args[0], &vmFlags)
+			vmrunExecCommand("reset", args[0], &vmFlags)
 		},
 	}
 
-	// stopCmd.Flags().StringVarP(&vmx, "vmx", "V", "", "VM vmx file")
-	// stopCmd.MarkFlagRequired("vmx")
-	stopCmd.PersistentFlags().BoolVar(&hardR, "hard", false, "Forces VM to do a hard shutdown.")
-	stopCmd.PersistentFlags().BoolVar(&softR, "soft", true, "Does soft stop for a vm with signal to shutdown.")
-	rootCmd.AddCommand(stopCmd)
+	resetCmd.PersistentFlags().BoolVar(&hardR, "hard", false, "Forces VM to do a hard reset.")
+	resetCmd.PersistentFlags().BoolVar(&softR, "soft", true, "Does soft stop for a vm with signal to shutdown.")
+	rootCmd.AddCommand(resetCmd)
 }
