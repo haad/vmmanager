@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
+
+	log "github.com/haad/vmmanager/log"
 )
 
 type vmrunFlags struct {
@@ -32,17 +33,16 @@ func vmrunExecCommand(vmrunc string, vmx string, vmrf *vmrunFlags) {
 		}
 	}
 
-	fmt.Println(vmrf)
-	fmt.Printf("vmrun %s %s %s\n", vmrunc, vmx, vmrArgs)
+	//fmt.Println(vmrf)
+	log.Slog.Debugf("Executing vmrun command: vmrun %s %s %s\n", vmrunc, vmx, vmrArgs)
 
 	// Execute the "vmrun" command in the current directory
 	output, err := exec.Command("vmrun", vmrunc, vmx, vmrArgs).Output()
 	if err != nil {
-		fmt.Println("Error Message:", string(output))
-		fmt.Println("Error executing command:", err)
+		log.Slog.Errorf("Error Message:", string(output))
+		log.Slog.Errorf("Error executing command:", err)
 		os.Exit(1)
 	}
 
-	// Print the command output
-	fmt.Println(string(output))
+	log.Slog.Infof(string(output))
 }
