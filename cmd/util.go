@@ -1,48 +1,25 @@
 package cmd
 
 import (
-	"os"
-	"os/exec"
+	"fmt"
+	"strings"
 
-	log "github.com/haad/vmmanager/log"
+	"github.com/spf13/cobra"
 )
 
-type vmrunFlags struct {
-	Hard bool
-	Soft bool
-	Gui  bool
-}
-
-func vmrunExecCommand(vmrunc string, vmx string, vmrf *vmrunFlags) {
-	var vmrArgs string
-	//	var vmrGArgs string
-
-	if !vmrf.Gui {
-		if vmrf.Hard {
-			vmrArgs = "hard"
-		} else if vmrf.Soft {
-			vmrArgs = "soft"
-		}
+func validatePostArguments(cmd *cobra.Command, args []string) error {
+	if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
+		return err
 	}
 
-	if !vmrf.Hard && !vmrf.Soft {
-		if vmrf.Gui {
-			vmrArgs = "gui"
-		} else {
-			vmrArgs = "nogui"
-		}
+	if err := cobra.MaximumNArgs(1)(cmd, args); err != nil {
+		return err
 	}
 
-	//fmt.Println(vmrf)
-	log.Slog.Debugf("Executing vmrun command: vmrun %s %s %s\n", vmrunc, vmx, vmrArgs)
-
-	// Execute the "vmrun" command in the current directory
-	output, err := exec.Command("vmrun", vmrunc, vmx, vmrArgs).Output()
-	if err != nil {
-		log.Slog.Errorf("Error Message:", string(output))
-		log.Slog.Errorf("Error executing command:", err)
-		os.Exit(1)
+	parts := strings.Split(args[0], ".")
+	if strings.Contains(parts[len(parts)-1], "vmx") {
+		return nil
 	}
 
-	log.Slog.Infof(string(output))
+	return fmt.Errorf("invalid vmx path specified: %s", args[0])
 }
