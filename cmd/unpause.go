@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/haad/vmmanager/util"
+	"github.com/haad/vmmanager/vmware"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +14,8 @@ func init() {
 			return validatePostArguments(cmd, args)
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			util.VmrunExecCommand("unpause", args[0], nil)
+			f := vmware.NewFusion(args[0], "", "", "")
+			f.Unpause()
 		},
 	}
 

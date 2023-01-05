@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"github.com/haad/vmmanager/util"
+	"github.com/haad/vmmanager/vmware"
 	"github.com/spf13/cobra"
 )
 
 func init() {
 	var hardR bool
-	var softR bool
 	var resetCmd = &cobra.Command{
 		Use:   "reset [--hard] [path_to_file.vmx]",
 		Short: "Reset virtual machine ",
@@ -16,13 +15,15 @@ func init() {
 			return validatePostArguments(cmd, args)
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			var vmFlags = util.VmrunFlags{Hard: hardR, Soft: softR, Gui: false}
-
-			util.VmrunExecCommand("reset", args[0], &vmFlags)
+			f := vmware.NewFusion(args[0], "", "", "")
+			if hardR {
+				f.Reset()
+			} else {
+				f.Restart()
+			}
 		},
 	}
 
 	resetCmd.PersistentFlags().BoolVar(&hardR, "hard", false, "Forces VM to do a hard reset.")
-	resetCmd.PersistentFlags().BoolVar(&softR, "soft", true, "Does soft stop for a vm with signal to shutdown.")
 	rootCmd.AddCommand(resetCmd)
 }
