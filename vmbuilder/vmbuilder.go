@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/haad/vmmanager/dist"
 	"github.com/haad/vmmanager/log"
 	"github.com/haad/vmmanager/qemu"
 )
@@ -17,10 +18,11 @@ type VM struct {
 	vmDir   string
 
 	// Required VM resources
-	cpu      uint16
-	mem      uint16
-	disk     uint16
-	diskPath string
+	cpu       uint16
+	mem       uint16
+	disk      uint16
+	diskPath  string
+	cdromPath string
 
 	sourceImage string
 }
@@ -33,10 +35,11 @@ func NewVM(path, vmx, name, dir string, cpu, mem, disk uint16) *VM {
 		baseDir: dir,
 		vmDir:   fmt.Sprintf("%s/%s.vmwarevm", dir, name), // Path to VM directory with vmdk + vmx files.
 
-		cpu:      cpu,
-		mem:      mem,
-		disk:     disk,
-		diskPath: path,
+		cpu:       cpu,
+		mem:       mem,
+		disk:      disk,
+		diskPath:  path,
+		cdromPath: dist.CreateSeedIso(),
 
 		sourceImage: path,
 	}
@@ -47,6 +50,11 @@ func (v *VM) BuildVm() error {
 
 	checkVMDir(v.vmDir)
 	qemu.ConvertImageVmdk(v.sourceImage, v.getVMDKpath())
+	_, err := v.VmxRender()
+	if err != nil {
+		log.Slog.Errorf("Falied to create VMX template.")
+		return err
+	}
 
 	return nil
 }
@@ -65,5 +73,4 @@ func checkVMDir(dir string) {
 		log.Slog.Debugf("Creating directory for vm at: %s", dir)
 		os.MkdirAll(dir, 0750)
 	}
-
 }

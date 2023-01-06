@@ -33,3 +33,4 @@ _testmain.go
 /vmmanager
 /bin
 /build
+dist/seed.iso

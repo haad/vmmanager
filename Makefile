@@ -4,7 +4,7 @@ GIT_SHA=`git rev-parse --short HEAD || echo`
 .DEFAULT_GOAL := all
 .PHONY: all
 all: ## build pipeline
-all: mod inst gen build  #spell
+all: mod inst gen seed build  #spell
 
 .PHONY: ci
 ci: ## CI build pipeline
@@ -73,6 +73,10 @@ diff: ## git diff
 	git diff --exit-code
 	RES=$$(git status --porcelain) ; if [ -n "$$RES" ]; then echo $$RES && exit 1 ; fi
 
+.PHONY: seed
+seed:
+	$(call print-target)
+	hdiutil makehybrid -o dist/seed.iso -hfs -ov -joliet -iso -default-volume-name cidata dist/seed
 
 define print-target
     @printf "Executing target: \033[36m$@\033[0m\n"
