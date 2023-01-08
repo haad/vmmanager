@@ -20,9 +20,10 @@ func CreateSeedIso() string {
 	if err != nil {
 		log.Slog.Fatal(err)
 	}
-	defer os.RemoveAll(cdpath)
+	// defer os.RemoveAll(cdpath)
 
-	isoF, err := os.Create(cdpath)
+	log.Slog.Debugf("Creating iso image at: %s/seed.iso", cdpath)
+	isoF, err := os.Create(cdpath + "/seed.iso")
 	if err != nil {
 		log.Slog.Fatal(err)
 		return ""
@@ -37,5 +38,5 @@ func CreateSeedIso() string {
 	log.Slog.Debugf("Created new ISO image at %s with size: %d\n", cdpath, n)
 	isoF.Sync()
 
-	return cdpath
+	return cdpath + "/seed.iso"
 }

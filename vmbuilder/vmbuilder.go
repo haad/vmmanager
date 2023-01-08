@@ -59,6 +59,10 @@ func (v *VM) BuildVm() error {
 	return nil
 }
 
+func (v *VM) CleanUp() {
+	os.RemoveAll(v.cdromPath)
+}
+
 func (v *VM) getVMDKpath() string {
 	file := filepath.Base(v.diskPath)
 

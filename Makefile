@@ -76,7 +76,7 @@ diff: ## git diff
 .PHONY: seed
 seed:
 	$(call print-target)
-	hdiutil makehybrid -o dist/seed.iso -hfs -ov -joliet -iso -default-volume-name cidata dist/seed
+	[ -f dist/seed.iso ] || hdiutil makehybrid -o dist/seed.iso -hfs -ov -joliet -iso -default-volume-name cidata dist/seed
 
 define print-target
     @printf "Executing target: \033[36m$@\033[0m\n"

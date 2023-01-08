@@ -37,6 +37,8 @@ func init() {
 
 			vm := vmbuilder.NewVM(path, vmx, name, dir, cpu, mem, disk)
 			vm.BuildVm()
+
+			// vm.CleanUp()
 		},
 	}
 

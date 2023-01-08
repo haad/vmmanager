@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/haad/vmmanager/log"
 	"github.com/haad/vmmanager/vmware"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +20,13 @@ func init() {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			f := vmware.NewFusion(args[0], "", "", "")
-			f.GetGuestIPAddress(wait)
+			ip, err := f.GetGuestIPAddress(wait)
+			if err != nil {
+				log.Slog.Errorln(err)
+				os.Exit(1)
+			}
+
+			fmt.Println("VM ipAddress is: ", ip)
 		},
 	}
 
