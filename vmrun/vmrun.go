@@ -36,10 +36,13 @@ func vmrun(app string, arg ...string) (string, error) {
 
 	err := cmd.Run()
 	if err != nil {
+		log.Slog.Debugf("Command: %s %s finished: %s, err: %s\n", cmd.Path, cmd.Args, stdout.String(), err)
+
 		if runErr := err.(*exec.ExitError); runErr != nil {
 			return "", fmt.Errorf(stdout.String())
 		}
 	}
+	log.Slog.Debugf("Command: %s %s finished: %s\n", cmd.Path, cmd.Args, stdout.String())
 
 	return stdout.String(), err
 }
