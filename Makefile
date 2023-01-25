@@ -76,6 +76,8 @@ diff: ## git diff
 .PHONY: seed
 seed:
 	$(call print-target)
+	echo -e "instance-id: iid-local01\nlocal-hostname: cloudimg\nhostname: cloudimg\npreserve_hostname: true\nmanage_etc_hosts: true" > dist/seed/meta-data
+	echo -e "#cloud-config\npassword: passw0rd\nchpasswd: { expire: False }\nssh_pwauth: True\n" > dist/seed/user-data
 	[ -f dist/seed.iso ] || hdiutil makehybrid -o dist/seed.iso -hfs -ov -joliet -iso -default-volume-name cidata dist/seed
 
 define print-target

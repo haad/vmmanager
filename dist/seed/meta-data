@@ -1,2 +1,5 @@
 instance-id: iid-local01
 local-hostname: cloudimg
+hostname: cloudimg
+preserve_hostname: true
+manage_etc_hosts: true
